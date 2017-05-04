@@ -13960,6 +13960,7 @@ module.exports = Todo;
 
 var React = __webpack_require__(4);
 var TodoList = __webpack_require__(122);
+var AddTodo = __webpack_require__(236);
 
 var TodoApp = React.createClass({
     displayName: 'TodoApp',
@@ -13975,6 +13976,10 @@ var TodoApp = React.createClass({
             }]
         };
     },
+    handleAddTodo: function handleAddTodo(text) {
+        console.log(text);
+        alert('new todo: ' + text);
+    },
     render: function render() {
         var todos = this.state.todos;
 
@@ -13982,7 +13987,8 @@ var TodoApp = React.createClass({
         return React.createElement(
             'div',
             null,
-            React.createElement(TodoList, { todos: todos })
+            React.createElement(TodoList, { todos: todos }),
+            React.createElement(AddTodo, { onTodoAdded: this.handleAddTodo })
         );
     }
 });
@@ -26259,6 +26265,55 @@ __webpack_require__(119);
 __webpack_require__(118);
 module.exports = __webpack_require__(117);
 
+
+/***/ }),
+/* 236 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var React = __webpack_require__(4);
+
+var AddTodo = React.createClass({
+    displayName: 'AddTodo',
+
+    handleSubmit: function handleSubmit(e) {
+        e.preventDefault();
+        var value = this.refs.todoItemText.value.trim();
+
+        if (value.length > 0) {
+            this.refs.todoItemText.value = '';
+            this.props.onTodoAdded(value);
+        } else {
+            this.refs.todoItemText.focus();
+        }
+    },
+    render: function render() {
+        var _props = this.props,
+            text = _props.text,
+            id = _props.id;
+
+
+        return React.createElement(
+            'div',
+            null,
+            React.createElement(
+                'form',
+                { ref: 'form', onSubmit: this.handleSubmit, className: 'add-todo-form' },
+                React.createElement('input', { type: 'text', ref: 'todoItemText', placeholder: 'Enter todo item' }),
+                React.createElement(
+                    'button',
+                    { className: 'button expanded' },
+                    'Add new todo'
+                )
+            )
+        );
+    }
+
+});
+
+module.exports = AddTodo;
 
 /***/ })
 /******/ ]);

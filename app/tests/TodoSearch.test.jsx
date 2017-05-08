@@ -16,14 +16,21 @@ describe('TodoSearch', () => {
       var todoSearch = TestUtils.renderIntoDocument(<TodoSearch onSearch={spy}/>);
       var $el = $(ReactDOM.findDOMNode(todoSearch));
       var enteredText = 'test';
+      var input = $el.find('input[type=search]')[0];
 
-      todoSearch.refs.searchText.value = enteredText;
-      //TestUtils.Simulate.change($el.find('input[type=search]')[0], {target: {value: 'a'}});
-      TestUtils.Simulate.change(todoSearch.refs.searchText);
+      input.value = enteredText;
+      TestUtils.Simulate.change(input);
+
       expect(spy).toHaveBeenCalledWith(false, enteredText);      
   });
 
   it('should call onSearch with proper checked value', () => {
+    var spy = expect.createSpy();
+    var todoSearch = TestUtils.renderIntoDocument(<TodoSearch onSearch={spy}/>);
     
+    todoSearch.refs.showCompleted.checked = true;
+    TestUtils.Simulate.change(todoSearch.refs.showCompleted);
+
+    expect(spy).toHaveBeenCalledWith(true, '');      
   });
 });

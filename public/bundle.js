@@ -26403,6 +26403,23 @@ module.exports = {
         } catch (e) {}
 
         return $.isArray(todos) ? todos : [];
+    },
+    filterTodos: function filterTodos(todos, showCompleted, searchText) {
+        var filteredTodos = todos;
+
+        // filter by showCompleted
+        filteredTodos = filteredTodos.filter(function (todo) {
+            return !todo.completed || showCompleted;
+        });
+
+        // // filter by searchText
+        // filteredTodos = filteredTodos.filter((todo) => {
+        //     return todo.text.toLowercase().contains(searchText);
+        // });
+
+        // sort todos with non-completed first
+
+        return filteredTodos;
     }
 };
 
@@ -26543,18 +26560,22 @@ var TodoApp = React.createClass({
         console.log(showCompleted, searchText);
         this.setState({
             showCompleted: showCompleted,
-            searchText: searchText
+            searchText: searchText.toLowerCase()
         });
     },
     render: function render() {
-        var todos = this.state.todos;
+        var _state = this.state,
+            todos = _state.todos,
+            showCompleted = _state.showCompleted,
+            searchText = _state.searchText;
 
+        var filteredTodos = TodoAPI.filterTodos(todos, showCompleted, searchText);
 
         return React.createElement(
             'div',
             null,
             React.createElement(TodoSearch, { onSearch: this.handleSearch }),
-            React.createElement(TodoList, { todos: todos, onToggle: this.handleToggle }),
+            React.createElement(TodoList, { todos: filteredTodos, onToggle: this.handleToggle }),
             React.createElement(AddTodo, { onTodoAdded: this.handleAddTodo })
         );
     }

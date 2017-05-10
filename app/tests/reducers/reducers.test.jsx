@@ -31,7 +31,9 @@ describe('Reducers', () => {
         it('should add todo', () => {
             var action = {
                 type:'ADD_TODO',
-                text: 'Walk the dog'
+                todo: {
+                    text: 'Walk the dog'
+                }
             };
             var res = reducers.todosReducer(df([]), df(action));
             expect(res.length).toBe(1);

@@ -42767,18 +42767,28 @@ module.exports = {
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 var React = __webpack_require__(7);
+
+var _require = __webpack_require__(538),
+    connect = _require.connect;
+
+var actions = __webpack_require__(314);
 
 var AddTodo = React.createClass({
     displayName: 'AddTodo',
 
     handleSubmit: function handleSubmit(e) {
         e.preventDefault();
-        var value = this.refs.todoItemText.value.trim();
+        var dispatch = this.props.dispatch;
 
-        if (value.length > 0) {
+        var todoItemText = this.refs.todoItemText.value.trim();
+
+        if (todoItemText.length > 0) {
             this.refs.todoItemText.value = '';
-            this.props.onTodoAdded(value);
+            dispatch(actions.addTodo(todoItemText));
         } else {
             this.refs.todoItemText.focus();
         }
@@ -42807,7 +42817,7 @@ var AddTodo = React.createClass({
 
 });
 
-module.exports = AddTodo;
+exports.default = connect()(AddTodo);
 
 /***/ }),
 /* 317 */
@@ -42816,6 +42826,9 @@ module.exports = AddTodo;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 var React = __webpack_require__(7);
 
 var _require = __webpack_require__(538),
@@ -42824,7 +42837,7 @@ var _require = __webpack_require__(538),
 var moment = __webpack_require__(0);
 var actions = __webpack_require__(314);
 
-var Todo = React.createClass({
+var Todo = exports.Todo = React.createClass({
     displayName: 'Todo',
 
     render: function render() {
@@ -42878,7 +42891,7 @@ var Todo = React.createClass({
 
 });
 
-module.exports = connect()(Todo);
+exports.default = connect()(Todo);
 
 /***/ }),
 /* 318 */
@@ -42887,14 +42900,22 @@ module.exports = connect()(Todo);
 "use strict";
 
 
+var _TodoList = __webpack_require__(319);
+
+var _TodoList2 = _interopRequireDefault(_TodoList);
+
+var _AddTodo = __webpack_require__(316);
+
+var _AddTodo2 = _interopRequireDefault(_AddTodo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var React = __webpack_require__(7);
 var uuid = __webpack_require__(253);
 var moment = __webpack_require__(0);
 
-var TodoList = __webpack_require__(319);
-var AddTodo = __webpack_require__(316);
 var TodoSearch = __webpack_require__(320);
 var TodoAPI = __webpack_require__(315);
 
@@ -42955,8 +42976,8 @@ var TodoApp = React.createClass({
                         'div',
                         { className: 'container' },
                         React.createElement(TodoSearch, { onSearch: this.handleSearch }),
-                        React.createElement(TodoList, null),
-                        React.createElement(AddTodo, { onTodoAdded: this.handleAddTodo })
+                        React.createElement(_TodoList2.default, null),
+                        React.createElement(_AddTodo2.default, { onTodoAdded: this.handleAddTodo })
                     )
                 )
             )
@@ -42973,16 +42994,25 @@ module.exports = TodoApp;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.TodoList = undefined;
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _Todo = __webpack_require__(317);
+
+var _Todo2 = _interopRequireDefault(_Todo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var React = __webpack_require__(7);
 
 var _require = __webpack_require__(538),
     connect = _require.connect;
 
-var Todo = __webpack_require__(317);
-
-var TodoList = React.createClass({
+var TodoList = exports.TodoList = React.createClass({
     displayName: 'TodoList',
 
     render: function render() {
@@ -42998,7 +43028,7 @@ var TodoList = React.createClass({
             }
 
             return todos.map(function (todo) {
-                return React.createElement(Todo, _extends({ key: todo.id }, todo));
+                return React.createElement(_Todo2.default, _extends({ key: todo.id }, todo));
             });
         };
 
@@ -43011,7 +43041,7 @@ var TodoList = React.createClass({
 
 });
 
-module.exports = connect(function (state) {
+exports.default = connect(function (state) {
     return {
         todos: state.todos
     };
@@ -43124,6 +43154,8 @@ var todosReducer = exports.todosReducer = function todosReducer() {
                         completed: nextCompleted,
                         completedAt: nextCompleted ? moment().unix() : undefined
                     });
+                } else {
+                    return todo;
                 }
             });
         default:
@@ -43149,13 +43181,15 @@ var _require = __webpack_require__(321),
     todosReducer = _require.todosReducer;
 
 var configure = exports.configure = function configure() {
+    var initialState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
     var reducer = redux.combineReducers({
         searchText: searchTextReducer,
         showCompleted: showCompletedReducer,
         todos: todosReducer
     });
 
-    var store = redux.createStore(reducer, redux.compose(window.devToolsExtension ? window.devToolsExtension() : function (f) {
+    var store = redux.createStore(reducer, initialState, redux.compose(window.devToolsExtension ? window.devToolsExtension() : function (f) {
         return f;
     }));
 
